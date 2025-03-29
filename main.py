@@ -3,55 +3,54 @@ import time
 
 def comp_input(chances, data):
     print("Computer's turn..")
-    chance = "0"
     #setting the range for rows and columns for the computer to decided
-    inpt = rd.choice(chances)
-    if inpt in chances:
+    if len(chances) !=0:
+        inpt = rd.choice(chances)
+        #Checking the index range condition
         data [inpt[0]][inpt[1]] ='0' 
         chances.remove(inpt)
-    elif(len(chances)==0):
-        print(" over")
     time.sleep(1.5)
     display(data)
         
 
-data = [[" "," "," " ],[" "," "," "],[" "," "," "]]
-chances=[[0,0],[0,1],[0,2],
-         [1,0],[1,1],[1,2],
-         [2,0],[2,1],[2,2]]
-
 def display(data):
     print("-------")
     for row in data:
-        data =f"|{row[0]}|{row[1]}|{row[2]}|"
-        print(data)
+        row_display =f"|{row[0]}|{row[1]}|{row[2]}|"
+        print(row_display)
     print("-------")
 
 def user_input():
-    #Getting input for rows and cols
-    valid = False
+    
     time.sleep(0.5)
     print("Your turn")
-    while not valid:
-        row = int(input("Enter the row "))
-        col = int(input("Enter the column "))
         #Checking the index range condition
-        if [row,col] in chances:
-            data[row][col]='X' 
-            chances.remove([row,col])
-            valid = True
-        elif(row or col)>=3:
-            print("Index out of range!!")
-            print("Please enter a valid index for row or columns")
-        else:
-            print("That index is not avaliable")
+    while True:
+        try:
+            row = int(input("Enter the row (0-2): "))
+            col = int(input("Enter the column (0-2): "))
+            if row not in range(3) or col not in range(3):
+                print("Index out of range! Please enter a valid row and column (0-2).")
+            #Checking the index range condition
+            elif [row,col] in chances:
+                data[row][col]='X' 
+                chances.remove([row,col])
+                break                
+            else:
+                print("That position is already taken.")
+        except ValueError:
+            print("Invalid input! Please enter a number between 0 and 2.")
+    
     display(data)
        
-    
+# Initialize game board and available moves
+data = [[" " for _ in range(3)] for _ in range(3)]
+chances = [[i, j] for i in range(3) for j in range(3)]
+
 
 display(data)
-while len(chances) !=0:
+while chances:
     user_input()
-    #now the computer must select the position for its insertion
-    comp_input(chances, data)
+    if chances:  
+        comp_input(chances, data)
     
